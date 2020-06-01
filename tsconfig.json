@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable"],
+    "target": "ES3",
+    "baseUrl": "./src"
+  },
+  "include": ["./src/**/*"]
+}
