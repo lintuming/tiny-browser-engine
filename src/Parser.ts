@@ -1,15 +1,21 @@
+import { assert } from "./utils";
+
 export type BaseOptions = { source: string; pos: number };
 
-export type TestFnResult = [boolean, (result: string) => string] | boolean;
+export interface Overrides {
+  (options: { move: () => string }): void;
+}
 
+export type TestFnMeta = {
+  overrides: Overrides;
+};
 export interface TestFn {
-  (char: string): TestFnResult;
+  (char: string, meta: TestFnMeta): boolean;
 }
 
 class Parser {
   source: string;
   pos: number;
-
   constructor({ source, pos }: BaseOptions) {
     this.source = source;
     this.pos = pos;
@@ -26,33 +32,26 @@ class Parser {
   eof() {
     return this.pos >= this.source.length;
   }
+
   consume(test: TestFn) {
     let result = "";
-    while (!this.eof()) {
-      const testResult = test(this.next_char());
-      let pass = false;
-      let rewrite = (f: string) => f;
-      if (Array.isArray(testResult)) {
-        [pass, rewrite] = testResult;
-      } else {
-        pass = testResult;
-      }
-      if (pass) {
-        result = rewrite(result);
-        result += this.eat();
-      } else {
-        break;
-      }
+    const originMove = this.eat.bind(this);
+    let move = originMove;
+    const overrides = (options: { move: () => string }) => {
+      move = options.move;
+    };
+    while (!this.eof() && test(this.next_char(), { overrides })) {
+      result += move();
+      move = originMove;
     }
     return result;
   }
-
   startWith(char: string) {
     return this.source.startsWith(char, this.pos);
   }
+
   skipWhitspace() {
-    this.consume((char) => /\s/.test(char));
-    return true;
+    return this.consume((char) => /\s/.test(char));
   }
   printCodeSnippet(msg?: string, pos?: number) {
     pos = pos || this.pos;

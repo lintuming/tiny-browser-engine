@@ -1,3 +1,5 @@
+import { Rule } from "StyleSheet";
+
 enum NodeTypes {
   Text,
   Element,
@@ -18,6 +20,8 @@ class Element extends BaseNode {
   tag: string;
   attributes: Attributes;
   children: Node[];
+  parent: Node | null;
+  sibling: Node | null;
   constructor({
     tag,
     attributes,
@@ -25,21 +29,28 @@ class Element extends BaseNode {
   }: {
     tag: string;
     attributes: Attributes;
-    children: Node[];
+    children?: Node[];
   }) {
     super({ type: NodeTypes.Element });
     this.tag = tag;
     this.attributes = attributes;
     this.children = children;
+    this.parent = null;
+    this.sibling = null;
   }
+  // attach style
 }
 
 class TextNode extends BaseNode {
   text: string;
+  parent: Node | null;
+  sibling: Node | null;
   constructor({ text }: { text: string }) {
     super({ type: NodeTypes.Text });
     this.text = text;
+    this.parent = null;
+    this.sibling = null;
   }
 }
 
-export { Element,TextNode,Node };
+export { Element, TextNode, Node };
