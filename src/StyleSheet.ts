@@ -36,17 +36,14 @@ class Rule {
 }
 
 class Selector {
-  selectorText: SelectorData[];
-
-  private specificityCache?: Specificitys;
+  specificity:Specificitys;
+  private text:SelectorData[]
   constructor({ selectorText }: { selectorText: SelectorData[] }) {
-    this.selectorText = selectorText;
+    this.text = selectorText;
+    this.specificity = this.calculateSpecificity()
   }
 
-  get specificity() {
-    if (this.specificityCache != null) {
-      return this.specificityCache;
-    }
+  private calculateSpecificity():Specificitys{
     let id = 0;
     let classname = 0;
     let tag = 0;
@@ -61,9 +58,17 @@ class Selector {
         if (data.identifier !== "*") tag++;
       }
     });
-    this.specificityCache = [id, classname, tag];
-    return this.specificityCache;
+    return [id, classname, tag];
   }
+  set selectorText(selectorText: SelectorData[]) {
+    this.text = selectorText;
+    this.specificity = this.calculateSpecificity()
+    return;
+  }
+  get selectorText() {
+    return this.text;
+  }
+
 }
 
 class SelectorData {

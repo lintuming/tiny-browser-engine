@@ -1,4 +1,4 @@
-import { renderTree, RenderNode } from "RenderTree";
+import { renderTree, StyledNode } from "RenderTree";
 import { parseCSS, parseStyleAttrs } from "CSSParser";
 import { parseHTML } from "HTMLParser";
 import { Element } from "Node";
@@ -14,7 +14,7 @@ type QueueObj = {
 };
 
 const EMPTY_MAP = new Map();
-function traverse(renderTree: RenderNode, queue: QueueObj[] = []) {
+function traverse(renderTree: StyledNode, queue: QueueObj[] = []) {
   if (isElement(renderTree.node)) {
     queue.push({
       tag: renderTree.node.tag,
@@ -163,7 +163,7 @@ describe("RenderTree", () => {
       matchOrder([
         {
           tag: "div",
-          computedStyle: new Map(),
+          computedStyle: EMPTY_MAP,
         },
         { tag: "span", computedStyle: buildStyle(`a:1;`) },
         { tag: "span", computedStyle: buildStyle(`b:2;c:3;`) },
@@ -179,4 +179,6 @@ describe("RenderTree", () => {
       ])
     );
   });
+
+
 });
