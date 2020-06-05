@@ -34,7 +34,9 @@ class CSSParser extends Parser {
   }
   parseIdentifier() {
     const id = this.consume(valid_identifier_char);
-    return id;
+    if (id) return id;
+    const universal = this.consume((char) => char === "*");
+    return universal;
   }
 
   parseStylesheet() {
@@ -97,8 +99,8 @@ class CSSParser extends Parser {
     const selectorText: SelectorData[] = [];
     outer: while (this.skipWhitspace() != null && !this.eof()) {
       let identifier = "";
-      let prefix = "";
-      let suffix = "";
+      let prefix: "#" | ".";
+      let suffix: "+" | "~" | ">";
       const nextChar = this.next_char();
       inner: switch (nextChar) {
         case ",":
@@ -115,8 +117,14 @@ class CSSParser extends Parser {
             case ">":
             case "~":
             case "+":
-              suffix = this.eat();
+              suffix = this.eat<">" | "+" | "~">();
           }
+          //（Descendant combinator） " "
+          const lastSelectorText = selectorText[selectorText.length - 1];
+          if (lastSelectorText && !lastSelectorText.suffix) {
+            lastSelectorText.suffix = " ";
+          }
+          // @ts-ignore
           selectorText.push(new SelectorData({ identifier, suffix, prefix }));
           break inner;
         }
@@ -164,4 +172,4 @@ const parseStyleAttrs = (source: string) => {
   return Parser.parseDeclarations();
 };
 
-export { parseCSS, CSSParser,parseStyleAttrs };
+export { parseCSS, CSSParser, parseStyleAttrs };

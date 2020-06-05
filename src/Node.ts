@@ -1,6 +1,6 @@
-import { Rule } from "StyleSheet";
+import {  Selector } from "StyleSheet";
 
-enum NodeTypes {
+export enum NodeTypes {
   Text,
   Element,
 }
@@ -14,14 +14,15 @@ class BaseNode {
 
 type Attributes = Map<string, string>;
 
-type Node = Element | TextNode;
+export type Node = Element | TextNode;
 
 class Element extends BaseNode {
   tag: string;
   attributes: Attributes;
-  children: Node[];
+  children?: Node[];
   parent: Node | null;
   sibling: Node | null;
+  selectors?:Selector[]
   constructor({
     tag,
     attributes,
@@ -45,6 +46,7 @@ class TextNode extends BaseNode {
   text: string;
   parent: Node | null;
   sibling: Node | null;
+
   constructor({ text }: { text: string }) {
     super({ type: NodeTypes.Text });
     this.text = text;
@@ -53,4 +55,4 @@ class TextNode extends BaseNode {
   }
 }
 
-export { Element, TextNode, Node };
+export { Element, TextNode };

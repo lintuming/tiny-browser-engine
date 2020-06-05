@@ -2,7 +2,7 @@ import { parseHTML } from "HTMLParser";
 import { Element, TextNode, Node } from "Node";
 
 function chainRelation(parent: Element, children: Node[]) {
-  let prev: Node = null;
+  let prev: Node|null = null;
   for (const child of children) {
     if (prev) {
       prev.sibling = child;

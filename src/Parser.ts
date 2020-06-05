@@ -1,4 +1,4 @@
-import { assert } from "./utils";
+
 
 export type BaseOptions = { source: string; pos: number };
 
@@ -24,10 +24,10 @@ class Parser {
     return this.source[this.pos];
   }
 
-  eat() {
+  eat<T extends string>(): T {
     const next_char = this.next_char();
     this.pos++;
-    return next_char;
+    return next_char as T;
   }
   eof() {
     return this.pos >= this.source.length;
@@ -36,7 +36,7 @@ class Parser {
   consume(test: TestFn) {
     let result = "";
     const originMove = this.eat.bind(this);
-    let move = originMove;
+    let move:()=>string = originMove;
     const overrides = (options: { move: () => string }) => {
       move = options.move;
     };

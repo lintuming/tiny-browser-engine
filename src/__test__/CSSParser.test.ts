@@ -5,7 +5,7 @@ import {
   Rule,
   Selector,
   SelectorData,
-} from "Stylesheet";
+} from "StyleSheet";
 
 describe("CSS Parser", () => {
   it("parse style attribute", () => {
@@ -15,6 +15,28 @@ describe("CSS Parser", () => {
     ]);
   });
 
+  it("parse global", () => {
+    expect(
+      parseCSS(`
+     * {
+       color:red;
+     }
+    `)
+    ).toMatchObject(
+      new StyleSheet([
+        new Rule({
+          selectors: [
+            new Selector({
+              selectorText: [
+                new SelectorData({ identifier: "*", }),
+              ],
+            }),
+          ],
+          declarations: [new Declaration("color", "red")],
+        }),
+      ])
+    );
+  });
   it("parse simple rule", () => {
     expect(
       parseCSS(`
@@ -51,7 +73,11 @@ describe("CSS Parser", () => {
           selectors: [
             new Selector({
               selectorText: [
-                new SelectorData({ identifier: "class", prefix: "." }),
+                new SelectorData({
+                  identifier: "class",
+                  prefix: ".",
+                  suffix: " ",
+                }),
                 new SelectorData({
                   identifier: "div",
                   prefix: "#",
@@ -80,7 +106,11 @@ describe("CSS Parser", () => {
           selectors: [
             new Selector({
               selectorText: [
-                new SelectorData({ identifier: "class", prefix: "." }),
+                new SelectorData({
+                  identifier: "class",
+                  prefix: ".",
+                  suffix: " ",
+                }),
                 new SelectorData({
                   identifier: "id",
                   prefix: "#",
@@ -170,7 +200,11 @@ describe("CSS Parser", () => {
           selectors: [
             new Selector({
               selectorText: [
-                new SelectorData({ identifier: "class", prefix: "." }),
+                new SelectorData({
+                  identifier: "class",
+                  prefix: ".",
+                  suffix: " ",
+                }),
                 new SelectorData({
                   identifier: "id",
                   prefix: "#",
@@ -194,7 +228,11 @@ describe("CSS Parser", () => {
           selectors: [
             new Selector({
               selectorText: [
-                new SelectorData({ identifier: "class", prefix: "." }),
+                new SelectorData({
+                  identifier: "class",
+                  prefix: ".",
+                  suffix: " ",
+                }),
                 new SelectorData({
                   identifier: "div",
                   prefix: "#",

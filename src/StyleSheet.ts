@@ -58,16 +58,11 @@ class Selector {
           id++;
         }
       } else {
-        tag++;
+        if (data.identifier !== "*") tag++;
       }
     });
     this.specificityCache = [id, classname, tag];
     return this.specificityCache;
-  }
-  // find which node match the selector
-  match(node: Element, declarations: Declaration[]) {
-    
-    return;
   }
 }
 
@@ -81,12 +76,12 @@ class SelectorData {
     suffix,
   }: {
     identifier: string;
-    prefix?: string | "#" | ".";
-    suffix?: string | ">" | "~" | "+";
+    prefix?: "#" | ".";
+    suffix?: "+" | ">" | "~" | " ";
   }) {
     this.identifier = identifier;
-    this.suffix = suffix ?? "";
-    this.prefix = prefix ?? "";
+    this.suffix = suffix;
+    this.prefix = prefix;
   }
 }
 
